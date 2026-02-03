@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation Detail - AINGEL EQ-Ops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════════════
+           AINGEL EQ-Ops Design System - Conversation Detail
+           ═══════════════════════════════════════════════════════════════════ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --noir-essence: #161719;
+            --noir-light: #1e1f21;
+            --noir-card: #242527;
+            --cultured: #F7F7F8;
+            --frosted-steel: #A5ADB8;
+            --terra: #948A86;
+            --human-touch: #DED9D7;
+            --coral: #C7918A;
+            --mauve: #A68A98;
+            --aura-gradient: linear-gradient(135deg, #C7918A 0%, #A68A98 100%);
+            --critical: #E54D4D;
+            --warning: #E5A84D;
+            --success: #4ADE80;
+            --info: #60A5FA;
+            --font-family: 'Outfit', sans-serif;
+            --tracking-headline: 0.05em;
+            --tracking-follow: 0.15em;
+            --tracking-body: 0.05em;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--noir-essence);
+            color: var(--cultured);
+            min-height: 100vh;
+            display: flex;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            line-height: 1.3;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #121314;
+            min-height: 100vh;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            padding: 0 24px;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-follow);
+            text-transform: uppercase;
+            background: var(--aura-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-section { flex: 1; }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            padding: 0 24px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--frosted-steel);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--cultured);
+        }
+
+        .nav-item.active {
+            background-color: rgba(199, 145, 138, 0.1);
+            color: var(--cultured);
+            border-left-color: var(--coral);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            color: var(--coral);
+        }
+
+        .sidebar-footer {
+            padding: 24px;
+            margin-top: auto;
+        }
+
+        .premium-badge {
+            background: var(--aura-gradient);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            text-align: center;
+            color: var(--cultured);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           THREE-COLUMN LAYOUT
+           ═══════════════════════════════════════════════════════════════════ */
+
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Center - Transcript Panel */
+        .transcript-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+        }
+
+        .transcript-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 40%;
+            background: radial-gradient(
+                ellipse at 10% 0%,
+                rgba(199, 145, 138, 0.06) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        /* Transcript Header */
+        .transcript-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--frosted-steel);
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--coral);
+        }
+
+        .conversation-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--aura-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .customer-details h2 {
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-headline);
+            margin-bottom: 4px;
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--frosted-steel);
+        }
+
+        .meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .agent-type-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            background: rgba(229, 168, 77, 0.2);
+            color: var(--warning);
+        }
+
+        /* Transcript Messages */
+        .transcript-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 85%;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .message.customer {
+            align-self: flex-start;
+        }
+
+        .message.agent {
+            align-self: flex-end;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--frosted-steel);
+        }
+
+        .message-sender {
+            font-weight: 400;
+            color: var(--cultured);
+        }
+
+        .message-bubble {
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message.customer .message-bubble {
+            background: var(--noir-card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .message.agent .message-bubble {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .message.flagged .message-bubble {
+            border-left: 3px solid var(--coral);
+        }
+
+        .flag-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 10px;
+            padding: 4px 8px;
+            background: rgba(199, 145, 138, 0.15);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--coral);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+        }
+
+        .message.escalation .message-bubble {
+            border-left: 3px solid var(--warning);
+        }
+
+        .escalation-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 10px;
+            padding: 4px 8px;
+            background: rgba(229, 168, 77, 0.15);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--warning);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           RIGHT PANEL - ANALYSIS
+           ═══════════════════════════════════════════════════════════════════ */
+
+        .analysis-panel {
+            width: 340px;
+            background: var(--noir-light);
+            overflow-y: auto;
+            padding: 24px;
+            flex-shrink: 0;
+        }
+
+        .analysis-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* EQ Score Display */
+        .eq-score-display {
+            text-align: center;
+            padding: 24px;
+            background: var(--noir-card);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .eq-score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(229, 77, 77, 0.15);
+            border: 3px solid var(--critical);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+
+        .eq-score-value {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+
+        .eq-score-max {
+            font-size: 14px;
+            color: var(--frosted-steel);
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            background: rgba(229, 77, 77, 0.2);
+            color: var(--critical);
+        }
+
+        /* Dimension Scores */
+        .dimension-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .dimension-item:last-child {
+            border-bottom: none;
+        }
+
+        .dimension-label {
+            font-size: 13px;
+            color: var(--frosted-steel);
+        }
+
+        .dimension-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dimension-value {
+            font-size: 13px;
+            font-weight: 400;
+            min-width: 40px;
+        }
+
+        .dimension-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dot.filled {
+            background: var(--coral);
+        }
+
+        /* Failure Flags */
+        .flag-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(199, 145, 138, 0.08);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .flag-item:hover {
+            background: rgba(199, 145, 138, 0.15);
+        }
+
+        .flag-icon {
+            font-size: 14px;
+        }
+
+        .flag-name {
+            font-size: 13px;
+            color: var(--coral);
+            font-family: monospace;
+        }
+
+        /* Business Impact */
+        .impact-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .impact-item:last-child {
+            border-bottom: none;
+        }
+
+        .impact-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--frosted-steel);
+        }
+
+        .impact-value {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .impact-value.high-risk {
+            color: var(--critical);
+        }
+
+        .impact-value.money {
+            color: var(--cultured);
+        }
+
+        /* Suggested Rewrite */
+        .rewrite-card {
+            background: var(--noir-card);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .rewrite-header {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+        }
+
+        .rewrite-original {
+            padding: 14px 16px;
+            font-size: 13px;
+            color: var(--frosted-steel);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .rewrite-suggested {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-left: 3px solid var(--coral);
+            background: rgba(199, 145, 138, 0.05);
+        }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            margin: 12px 16px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--frosted-steel);
+            font-family: var(--font-family);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(199, 145, 138, 0.1);
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+
+        /* Coaching Tip */
+        .coaching-card {
+            padding: 16px;
+            background: rgba(74, 222, 128, 0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        .coaching-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--success);
+        }
+
+        .coaching-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--cultured);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .analysis-section {
+            animation: fadeInUp 0.4s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .analysis-section:nth-child(1) { animation-delay: 0.1s; }
+        .analysis-section:nth-child(2) { animation-delay: 0.15s; }
+        .analysis-section:nth-child(3) { animation-delay: 0.2s; }
+        .analysis-section:nth-child(4) { animation-delay: 0.25s; }
+        .analysis-section:nth-child(5) { animation-delay: 0.3s; }
+        .analysis-section:nth-child(6) { animation-delay: 0.35s; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-text">A I N G E L</span>
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-label">Platform</div>
+            <a href="01-business-health-dashboard.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                </svg>
+                Dashboard
+            </a>
+            <a href="02-conversations-list.html" class="nav-item active">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                Conversations
+            </a>
+            <a href="04-alerts-center.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Alerts
+            </a>
+            <a href="06-agent-performance.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Agent Performance
+            </a>
+            <a href="07-settings.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="premium-badge">Premium Plan</div>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Transcript Panel -->
+        <div class="transcript-panel">
+            <div class="transcript-header">
+                <a href="02-conversations-list.html" class="back-link">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Conversations
+                </a>
+                <div class="conversation-meta">
+                    <div class="customer-avatar">JD</div>
+                    <div class="customer-details">
+                        <h2>John Davidson</h2>
+                        <div class="meta-tags">
+                            <span class="meta-tag">Order #4521</span>
+                            <span class="meta-tag">•</span>
+                            <span class="meta-tag">$127</span>
+                            <span class="meta-tag">•</span>
+                            <span class="meta-tag">💬 Chat</span>
+                            <span class="meta-tag">•</span>
+                            <span class="meta-tag">8 min</span>
+                        </div>
+                    </div>
+                    <span class="agent-type-badge">Bot → Human</span>
+                </div>
+            </div>
+
+            <div class="transcript-messages">
+                <!-- Message 1 - Customer -->
+                <div class="message customer">
+                    <div class="message-header">
+                        <span>👤</span>
+                        <span class="message-sender">Customer</span>
+                        <span>2:34 PM</span>
+                    </div>
+                    <div class="message-bubble">
+                        Hi, I've been waiting for my order for 2 weeks now. Where is it?
+                    </div>
+                </div>
+
+                <!-- Message 2 - Bot -->
+                <div class="message agent">
+                    <div class="message-header">
+                        <span>2:34 PM</span>
+                        <span class="message-sender">Buddy Bot</span>
+                        <span>🤖</span>
+                    </div>
+                    <div class="message-bubble">
+                        Hello! I'm Buddy Bot, your friendly assistant! 😊 Let me check on that order for you. Can you confirm your order number?
+                    </div>
+                </div>
+
+                <!-- Message 3 - Customer -->
+                <div class="message customer">
+                    <div class="message-header">
+                        <span>👤</span>
+                        <span class="message-sender">Customer</span>
+                        <span>2:35 PM</span>
+                    </div>
+                    <div class="message-bubble">
+                        It's #4521. I already entered this when I started this chat.
+                    </div>
+                </div>
+
+                <!-- Message 4 - Bot (FLAGGED) -->
+                <div class="message agent flagged">
+                    <div class="message-header">
+                        <span>2:35 PM</span>
+                        <span class="message-sender">Buddy Bot</span>
+                        <span>🤖</span>
+                    </div>
+                    <div class="message-bubble">
+                        Thanks for that! I see your order is still processing. Our shipping partner has been experiencing some delays. We apologize for any inconvenience!
+                        <div class="flag-label">🚩 blame_shift</div>
+                    </div>
+                </div>
+
+                <!-- Message 5 - Customer -->
+                <div class="message customer">
+                    <div class="message-header">
+                        <span>👤</span>
+                        <span class="message-sender">Customer</span>
+                        <span>2:37 PM</span>
+                    </div>
+                    <div class="message-bubble">
+                        That's not helpful. Can you expedite it or give me a refund? I needed this for an event this weekend.
+                    </div>
+                </div>
+
+                <!-- Message 6 - Bot (FLAGGED) -->
+                <div class="message agent flagged">
+                    <div class="message-header">
+                        <span>2:37 PM</span>
+                        <span class="message-sender">Buddy Bot</span>
+                        <span>🤖</span>
+                    </div>
+                    <div class="message-bubble">
+                        I understand your concern! Unfortunately, I can't modify shipping once an order is in transit. You can check our FAQs for more information about shipping times! 📦
+                        <div class="flag-label">🚩 repeated_deflection</div>
+                    </div>
+                </div>
+
+                <!-- Message 7 - Customer (ESCALATION) -->
+                <div class="message customer escalation">
+                    <div class="message-header">
+                        <span>👤</span>
+                        <span class="message-sender">Customer</span>
+                        <span>2:41 PM</span>
+                    </div>
+                    <div class="message-bubble">
+                        NEVER MIND. This is HORRIBLE customer service. I'm going to post about this experience everywhere. Cancel my order and I'm never buying from you again.
+                        <div class="escalation-label">⚠️ Escalation Detected</div>
+                    </div>
+                </div>
+
+                <!-- Message 8 - Bot (FLAGGED) -->
+                <div class="message agent flagged">
+                    <div class="message-header">
+                        <span>2:41 PM</span>
+                        <span class="message-sender">Buddy Bot</span>
+                        <span>🤖</span>
+                    </div>
+                    <div class="message-bubble">
+                        You got it! I'll transfer you to a team member who can help with cancellations. Thanks for reaching out! 😊
+                        <div class="flag-label">🚩 cheerful_abandonment</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Panel -->
+        <div class="analysis-panel">
+            <!-- EQ Score -->
+            <div class="analysis-section">
+                <div class="section-title">EQ Score</div>
+                <div class="eq-score-display">
+                    <div class="eq-score-circle">
+                        <span class="eq-score-value">0.75</span>
+                        <span class="eq-score-max">/4</span>
+                    </div>
+                    <span class="severity-badge">Critical</span>
+                </div>
+            </div>
+
+            <!-- Dimension Scores -->
+            <div class="analysis-section">
+                <div class="section-title">Dimension Scores</div>
+                <div class="dimension-item">
+                    <span class="dimension-label">Tone</span>
+                    <div class="dimension-score">
+                        <span class="dimension-value">1.5/4</span>
+                        <div class="dimension-dots">
+                            <span class="dot filled"></span>
+                            <span class="dot filled"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-label">Proportionality</span>
+                    <div class="dimension-score">
+                        <span class="dimension-value">1.0/4</span>
+                        <div class="dimension-dots">
+                            <span class="dot filled"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-label">Intent Alignment</span>
+                    <div class="dimension-score">
+                        <span class="dimension-value">0.5/4</span>
+                        <div class="dimension-dots">
+                            <span class="dot filled"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-label">Resolution</span>
+                    <div class="dimension-score">
+                        <span class="dimension-value">0/4</span>
+                        <div class="dimension-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Failure Flags -->
+            <div class="analysis-section">
+                <div class="section-title">Failure Flags</div>
+                <div class="flag-item">
+                    <span class="flag-icon">🚩</span>
+                    <span class="flag-name">blame_shift</span>
+                </div>
+                <div class="flag-item">
+                    <span class="flag-icon">🚩</span>
+                    <span class="flag-name">repeated_deflection</span>
+                </div>
+                <div class="flag-item">
+                    <span class="flag-icon">🚩</span>
+                    <span class="flag-name">cheerful_abandonment</span>
+                </div>
+                <div class="flag-item">
+                    <span class="flag-icon">🚩</span>
+                    <span class="flag-name">churn_signal_ignored</span>
+                </div>
+            </div>
+
+            <!-- Business Impact -->
+            <div class="analysis-section">
+                <div class="section-title">Business Impact</div>
+                <div class="impact-item">
+                    <span class="impact-label">💰 Revenue at Risk</span>
+                    <span class="impact-value money">$127</span>
+                </div>
+                <div class="impact-item">
+                    <span class="impact-label">👤 Customer LTV</span>
+                    <span class="impact-value money">$847</span>
+                </div>
+                <div class="impact-item">
+                    <span class="impact-label">⚠️ Churn Risk</span>
+                    <span class="impact-value high-risk">HIGH</span>
+                </div>
+            </div>
+
+            <!-- Suggested Rewrite -->
+            <div class="analysis-section">
+                <div class="section-title">Suggested Rewrite</div>
+                <div class="rewrite-card">
+                    <div class="rewrite-header">Original</div>
+                    <div class="rewrite-original">
+                        "You got it! I'll transfer you. Thanks for reaching out! 😊"
+                    </div>
+                    <div class="rewrite-header">Suggested</div>
+                    <div class="rewrite-suggested">
+                        "I completely understand your frustration, and I'm truly sorry this has been such a difficult experience. Let me connect you with our senior support team immediately - they have the authority to expedite your shipment or process a full refund, whichever you prefer."
+                    </div>
+                    <button class="copy-btn">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        Copy Response
+                    </button>
+                </div>
+            </div>
+
+            <!-- Coaching Tip -->
+            <div class="analysis-section">
+                <div class="section-title">Coaching Tip</div>
+                <div class="coaching-card">
+                    <div class="coaching-header">
+                        💡 Quick Win
+                    </div>
+                    <div class="coaching-text">
+                        When a customer uses ALL CAPS or threatens to leave, immediately acknowledge the severity of their frustration. Never respond with emoji or casual language. Match their urgency with concrete solutions.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

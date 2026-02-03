@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Performance - AINGEL EQ-Ops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --noir-essence: #161719;
+            --noir-light: #1e1f21;
+            --noir-card: #242527;
+            --cultured: #F7F7F8;
+            --frosted-steel: #A5ADB8;
+            --coral: #C7918A;
+            --mauve: #A68A98;
+            --aura-gradient: linear-gradient(135deg, #C7918A 0%, #A68A98 100%);
+            --critical: #E54D4D;
+            --warning: #E5A84D;
+            --success: #4ADE80;
+            --info: #60A5FA;
+            --font-family: 'Outfit', sans-serif;
+            --tracking-headline: 0.05em;
+            --tracking-follow: 0.15em;
+            --tracking-body: 0.05em;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--noir-essence);
+            color: var(--cultured);
+            min-height: 100vh;
+            display: flex;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            line-height: 1.3;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #121314;
+            min-height: 100vh;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            padding: 0 24px;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-follow);
+            text-transform: uppercase;
+            background: var(--aura-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-section { flex: 1; }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            padding: 0 24px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--frosted-steel);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--cultured);
+        }
+
+        .nav-item.active {
+            background-color: rgba(199, 145, 138, 0.1);
+            color: var(--cultured);
+            border-left-color: var(--coral);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            color: var(--coral);
+        }
+
+        .sidebar-footer {
+            padding: 24px;
+            margin-top: auto;
+        }
+
+        .premium-badge {
+            background: var(--aura-gradient);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            text-align: center;
+            color: var(--cultured);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 50%;
+            background: radial-gradient(
+                ellipse at 20% 10%,
+                rgba(199, 145, 138, 0.06) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-headline);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--frosted-steel);
+        }
+
+        /* Overview Cards */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .overview-card {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+        }
+
+        .overview-label {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 12px;
+        }
+
+        .overview-value {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .overview-trend {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .overview-trend.up { color: var(--success); }
+        .overview-trend.down { color: var(--critical); }
+
+        /* Bot vs Human Comparison */
+        .comparison-card {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .compare-item {
+            flex: 1;
+        }
+
+        .compare-label {
+            font-size: 12px;
+            color: var(--frosted-steel);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .compare-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .compare-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .compare-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .compare-fill.bot {
+            background: var(--info);
+        }
+
+        .compare-fill.human {
+            background: var(--success);
+        }
+
+        .compare-value {
+            font-size: 14px;
+            font-weight: 400;
+            min-width: 50px;
+        }
+
+        /* Agent Table */
+        .table-container {
+            background: var(--noir-light);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 1.5fr 80px 100px 100px 100px 120px;
+            padding: 16px 24px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1.5fr 80px 100px 100px 100px 120px;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .agent-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .agent-icon {
+            font-size: 20px;
+        }
+
+        .agent-name {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .type-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+        }
+
+        .type-badge.ai {
+            background: rgba(96, 165, 250, 0.2);
+            color: var(--info);
+        }
+
+        .type-badge.human {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--success);
+        }
+
+        .eq-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .eq-value {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .eq-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .eq-indicator.low { background: var(--critical); }
+        .eq-indicator.medium { background: var(--warning); }
+        .eq-indicator.good { background: var(--success); }
+
+        .convos-cell {
+            font-size: 14px;
+            color: var(--cultured);
+        }
+
+        .flags-cell {
+            font-size: 14px;
+        }
+
+        .flags-cell.high {
+            color: var(--coral);
+        }
+
+        .sparkline {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 24px;
+        }
+
+        .spark-bar {
+            width: 4px;
+            background: var(--coral);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+
+        /* Bottom Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .insight-card {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .insight-title {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Failure Patterns */
+        .pattern-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .pattern-item:last-child {
+            border-bottom: none;
+        }
+
+        .pattern-rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(199, 145, 138, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--coral);
+            flex-shrink: 0;
+        }
+
+        .pattern-info {
+            flex: 1;
+        }
+
+        .pattern-name {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .pattern-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pattern-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .pattern-fill {
+            height: 100%;
+            background: var(--coral);
+            border-radius: 3px;
+        }
+
+        .pattern-percent {
+            font-size: 13px;
+            color: var(--coral);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* Quick Wins */
+        .quick-win-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .quick-win-item:last-child {
+            border-bottom: none;
+        }
+
+        .win-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(74, 222, 128, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .win-content {
+            flex: 1;
+        }
+
+        .win-title {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .win-impact {
+            font-size: 12px;
+            color: var(--frosted-steel);
+        }
+
+        .win-impact span {
+            color: var(--success);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header { animation: fadeInUp 0.4s ease-out; }
+        .overview-grid { animation: fadeInUp 0.4s ease-out 0.1s both; }
+        .table-container { animation: fadeInUp 0.4s ease-out 0.2s both; }
+        .bottom-grid { animation: fadeInUp 0.4s ease-out 0.3s both; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-text">A I N G E L</span>
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-label">Platform</div>
+            <a href="01-business-health-dashboard.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                </svg>
+                Dashboard
+            </a>
+            <a href="02-conversations-list.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                Conversations
+            </a>
+            <a href="04-alerts-center.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Alerts
+            </a>
+            <a href="#" class="nav-item active">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Agent Performance
+            </a>
+            <a href="07-settings.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="premium-badge">Premium Plan</div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1>Agent Performance</h1>
+            <p>Compare human and AI agent quality</p>
+        </header>
+
+        <!-- Overview Cards -->
+        <div class="overview-grid">
+            <div class="overview-card">
+                <div class="overview-label">Average EQ Score</div>
+                <div class="overview-value">2.4/4</div>
+                <div class="overview-trend up">
+                    ▲ 0.3 pts vs last week
+                </div>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-label">Bot vs Human</div>
+                <div class="comparison-card">
+                    <div class="compare-item">
+                        <div class="compare-label">🤖 Bot</div>
+                        <div class="compare-bar-container">
+                            <div class="compare-bar">
+                                <div class="compare-fill bot" style="width: 45%;"></div>
+                            </div>
+                            <span class="compare-value">1.8</span>
+                        </div>
+                    </div>
+                    <div class="compare-item">
+                        <div class="compare-label">👤 Human</div>
+                        <div class="compare-bar-container">
+                            <div class="compare-bar">
+                                <div class="compare-fill human" style="width: 72%;"></div>
+                            </div>
+                            <span class="compare-value">2.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-label">Top Failure Pattern</div>
+                <div class="overview-value" style="font-size: 20px;">Intent Alignment</div>
+                <div class="overview-trend down">
+                    23% of all failures
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <span>Agent</span>
+                <span>Type</span>
+                <span>Avg EQ</span>
+                <span>Convos</span>
+                <span>Flags</span>
+                <span>Trend</span>
+            </div>
+
+            <div class="table-row">
+                <div class="agent-cell">
+                    <span class="agent-icon">🤖</span>
+                    <span class="agent-name">Buddy Bot</span>
+                </div>
+                <span class="type-badge ai">AI</span>
+                <div class="eq-cell">
+                    <span class="eq-value">1.8/4</span>
+                    <span class="eq-indicator low"></span>
+                </div>
+                <span class="convos-cell">1,247</span>
+                <span class="flags-cell high">234</span>
+                <div class="sparkline">
+                    <div class="spark-bar" style="height: 40%;"></div>
+                    <div class="spark-bar" style="height: 55%;"></div>
+                    <div class="spark-bar" style="height: 45%;"></div>
+                    <div class="spark-bar" style="height: 60%;"></div>
+                    <div class="spark-bar" style="height: 50%;"></div>
+                    <div class="spark-bar" style="height: 70%;"></div>
+                    <div class="spark-bar" style="height: 65%;"></div>
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="agent-cell">
+                    <span class="agent-icon">👤</span>
+                    <span class="agent-name">Sarah Mitchell</span>
+                </div>
+                <span class="type-badge human">Human</span>
+                <div class="eq-cell">
+                    <span class="eq-value">3.2/4</span>
+                    <span class="eq-indicator good"></span>
+                </div>
+                <span class="convos-cell">312</span>
+                <span class="flags-cell">18</span>
+                <div class="sparkline">
+                    <div class="spark-bar" style="height: 75%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 80%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 70%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 85%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 90%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 82%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 88%; background: var(--success); opacity: 0.6;"></div>
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="agent-cell">
+                    <span class="agent-icon">👤</span>
+                    <span class="agent-name">Mike Thompson</span>
+                </div>
+                <span class="type-badge human">Human</span>
+                <div class="eq-cell">
+                    <span class="eq-value">2.9/4</span>
+                    <span class="eq-indicator medium"></span>
+                </div>
+                <span class="convos-cell">287</span>
+                <span class="flags-cell">31</span>
+                <div class="sparkline">
+                    <div class="spark-bar" style="height: 60%; background: var(--warning); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 65%; background: var(--warning); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 70%; background: var(--warning); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 68%; background: var(--warning); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 72%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 75%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 78%; background: var(--success); opacity: 0.6;"></div>
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="agent-cell">
+                    <span class="agent-icon">🤖</span>
+                    <span class="agent-name">Support AI</span>
+                </div>
+                <span class="type-badge ai">AI</span>
+                <div class="eq-cell">
+                    <span class="eq-value">2.1/4</span>
+                    <span class="eq-indicator medium"></span>
+                </div>
+                <span class="convos-cell">892</span>
+                <span class="flags-cell high">156</span>
+                <div class="sparkline">
+                    <div class="spark-bar" style="height: 50%;"></div>
+                    <div class="spark-bar" style="height: 48%;"></div>
+                    <div class="spark-bar" style="height: 52%;"></div>
+                    <div class="spark-bar" style="height: 55%;"></div>
+                    <div class="spark-bar" style="height: 58%;"></div>
+                    <div class="spark-bar" style="height: 54%;"></div>
+                    <div class="spark-bar" style="height: 56%;"></div>
+                </div>
+            </div>
+
+            <div class="table-row">
+                <div class="agent-cell">
+                    <span class="agent-icon">👤</span>
+                    <span class="agent-name">Emily Watson</span>
+                </div>
+                <span class="type-badge human">Human</span>
+                <div class="eq-cell">
+                    <span class="eq-value">3.5/4</span>
+                    <span class="eq-indicator good"></span>
+                </div>
+                <span class="convos-cell">198</span>
+                <span class="flags-cell">8</span>
+                <div class="sparkline">
+                    <div class="spark-bar" style="height: 85%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 88%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 90%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 87%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 92%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 89%; background: var(--success); opacity: 0.6;"></div>
+                    <div class="spark-bar" style="height: 94%; background: var(--success); opacity: 0.6;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Grid -->
+        <div class="bottom-grid">
+            <!-- Failure Patterns -->
+            <div class="insight-card">
+                <div class="insight-title">Top Failure Patterns</div>
+
+                <div class="pattern-item">
+                    <span class="pattern-rank">1</span>
+                    <div class="pattern-info">
+                        <div class="pattern-name">Intent Alignment</div>
+                        <div class="pattern-bar-container">
+                            <div class="pattern-bar">
+                                <div class="pattern-fill" style="width: 23%;"></div>
+                            </div>
+                            <span class="pattern-percent">23%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <span class="pattern-rank">2</span>
+                    <div class="pattern-info">
+                        <div class="pattern-name">Tone Calibration</div>
+                        <div class="pattern-bar-container">
+                            <div class="pattern-bar">
+                                <div class="pattern-fill" style="width: 18%;"></div>
+                            </div>
+                            <span class="pattern-percent">18%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <span class="pattern-rank">3</span>
+                    <div class="pattern-info">
+                        <div class="pattern-name">Resolution Path</div>
+                        <div class="pattern-bar-container">
+                            <div class="pattern-bar">
+                                <div class="pattern-fill" style="width: 15%;"></div>
+                            </div>
+                            <span class="pattern-percent">15%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <span class="pattern-rank">4</span>
+                    <div class="pattern-info">
+                        <div class="pattern-name">Escalation Handling</div>
+                        <div class="pattern-bar-container">
+                            <div class="pattern-bar">
+                                <div class="pattern-fill" style="width: 12%;"></div>
+                            </div>
+                            <span class="pattern-percent">12%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Wins -->
+            <div class="insight-card">
+                <div class="insight-title">Quick Wins</div>
+
+                <div class="quick-win-item">
+                    <span class="win-number">1</span>
+                    <div class="win-content">
+                        <div class="win-title">Fix bot prompt for escalations</div>
+                        <div class="win-impact">Est. impact: <span>+0.4 EQ points</span> on 340 convos/week</div>
+                    </div>
+                </div>
+
+                <div class="quick-win-item">
+                    <span class="win-number">2</span>
+                    <div class="win-content">
+                        <div class="win-title">Add alternative product lookup</div>
+                        <div class="win-impact">Est. impact: <span>-15% deflection flags</span></div>
+                    </div>
+                </div>
+
+                <div class="quick-win-item">
+                    <span class="win-number">3</span>
+                    <div class="win-content">
+                        <div class="win-title">Train humans on implicit intent</div>
+                        <div class="win-impact">Est. impact: <span>+0.2 EQ points</span> team-wide</div>
+                    </div>
+                </div>
+
+                <div class="quick-win-item">
+                    <span class="win-number">4</span>
+                    <div class="win-content">
+                        <div class="win-title">Reduce bot cheerfulness on complaints</div>
+                        <div class="win-impact">Est. impact: <span>-40% tone flags</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

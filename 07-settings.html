@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AINGEL EQ-Ops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --noir-essence: #161719;
+            --noir-light: #1e1f21;
+            --noir-card: #242527;
+            --cultured: #F7F7F8;
+            --frosted-steel: #A5ADB8;
+            --coral: #C7918A;
+            --mauve: #A68A98;
+            --aura-gradient: linear-gradient(135deg, #C7918A 0%, #A68A98 100%);
+            --critical: #E54D4D;
+            --warning: #E5A84D;
+            --success: #4ADE80;
+            --info: #60A5FA;
+            --font-family: 'Outfit', sans-serif;
+            --tracking-headline: 0.05em;
+            --tracking-follow: 0.15em;
+            --tracking-body: 0.05em;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--noir-essence);
+            color: var(--cultured);
+            min-height: 100vh;
+            display: flex;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            line-height: 1.3;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #121314;
+            min-height: 100vh;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            padding: 0 24px;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-follow);
+            text-transform: uppercase;
+            background: var(--aura-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-section { flex: 1; }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            padding: 0 24px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--frosted-steel);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--cultured);
+        }
+
+        .nav-item.active {
+            background-color: rgba(199, 145, 138, 0.1);
+            color: var(--cultured);
+            border-left-color: var(--coral);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            color: var(--coral);
+        }
+
+        .sidebar-footer {
+            padding: 24px;
+            margin-top: auto;
+        }
+
+        .premium-badge {
+            background: var(--aura-gradient);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            text-align: center;
+            color: var(--cultured);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 40%;
+            background: radial-gradient(
+                ellipse at 20% 10%,
+                rgba(199, 145, 138, 0.06) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-headline);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--frosted-steel);
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-family: var(--font-family);
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            background: transparent;
+            border: none;
+            color: var(--frosted-steel);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--cultured);
+        }
+
+        .tab.active {
+            color: var(--coral);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--coral);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Platform Cards Grid */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .platform-card {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .platform-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .platform-card.connected {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .platform-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: var(--noir-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .platform-name {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            margin-bottom: 16px;
+        }
+
+        .status-badge.active {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--success);
+        }
+
+        .status-badge.inactive {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--frosted-steel);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .platform-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: var(--font-family);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .platform-action.connect {
+            background: var(--coral);
+            color: var(--cultured);
+        }
+
+        .platform-action.connect:hover {
+            background: var(--mauve);
+        }
+
+        .platform-action.settings {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--frosted-steel);
+        }
+
+        .platform-action.settings:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--cultured);
+        }
+
+        /* Settings Sections */
+        .settings-section {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .settings-section-title {
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-headline);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Toggle Items */
+        .toggle-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .toggle-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .toggle-item:first-child {
+            padding-top: 0;
+        }
+
+        .toggle-info {
+            flex: 1;
+            padding-right: 24px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .toggle-description {
+            font-size: 13px;
+            color: var(--frosted-steel);
+            line-height: 1.4;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: var(--cultured);
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--coral);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        /* Two Column Grid */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--noir-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-family: var(--font-family);
+            font-size: 14px;
+            color: var(--cultured);
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--coral);
+        }
+
+        .input-field::placeholder {
+            color: var(--frosted-steel);
+        }
+
+        .input-field.masked {
+            font-family: monospace;
+            letter-spacing: 0.2em;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--frosted-steel);
+            margin-top: 6px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: var(--font-family);
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .action-btn.primary {
+            background: var(--coral);
+            border: none;
+            color: var(--cultured);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--mauve);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--frosted-steel);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--cultured);
+        }
+
+        /* Status Indicator */
+        .webhook-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--frosted-steel);
+            margin-top: 8px;
+        }
+
+        .webhook-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--frosted-steel);
+        }
+
+        .webhook-status-dot.success {
+            background: var(--success);
+        }
+
+        .webhook-status-dot.error {
+            background: var(--critical);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header { animation: fadeInUp 0.4s ease-out; }
+        .tabs { animation: fadeInUp 0.4s ease-out 0.1s both; }
+        .platform-grid { animation: fadeInUp 0.4s ease-out 0.15s both; }
+        .settings-section { animation: fadeInUp 0.4s ease-out 0.2s both; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-text">A I N G E L</span>
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-label">Platform</div>
+            <a href="01-business-health-dashboard.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                </svg>
+                Dashboard
+            </a>
+            <a href="02-conversations-list.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                Conversations
+            </a>
+            <a href="04-alerts-center.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Alerts
+            </a>
+            <a href="06-agent-performance.html" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Agent Performance
+            </a>
+            <a href="#" class="nav-item active">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="premium-badge">Premium Plan</div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1>Settings</h1>
+            <p>Manage integrations, alerts, and team configurations</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab active">Integrations</button>
+            <button class="tab">Alert Rules</button>
+            <button class="tab">Team</button>
+            <button class="tab">Brand</button>
+            <button class="tab">Billing</button>
+        </div>
+
+        <!-- Connected Platforms -->
+        <div class="section-title">Connected Platforms</div>
+        <div class="platform-grid">
+            <div class="platform-card connected">
+                <div class="platform-logo">🎫</div>
+                <div class="platform-name">Zendesk</div>
+                <div class="status-badge active">
+                    <span class="status-dot"></span>
+                    Active
+                </div>
+                <button class="platform-action settings">Settings</button>
+            </div>
+
+            <div class="platform-card connected">
+                <div class="platform-logo">🛍️</div>
+                <div class="platform-name">Shopify</div>
+                <div class="status-badge active">
+                    <span class="status-dot"></span>
+                    Active
+                </div>
+                <button class="platform-action settings">Settings</button>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-logo">💬</div>
+                <div class="platform-name">Intercom</div>
+                <div class="status-badge inactive">
+                    Not Connected
+                </div>
+                <button class="platform-action connect">Connect</button>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-logo">📦</div>
+                <div class="platform-name">Gorgias</div>
+                <div class="status-badge inactive">
+                    Not Connected
+                </div>
+                <button class="platform-action connect">Connect</button>
+            </div>
+        </div>
+
+        <!-- Data Sources -->
+        <div class="settings-section">
+            <div class="settings-section-title">Data Sources</div>
+
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Sync conversations automatically</div>
+                    <div class="toggle-description">Continuously update chat logs every 15 minutes from connected platforms.</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Include voice transcripts</div>
+                    <div class="toggle-description">Process audio files and generate searchable text for voice conversations.</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-item">
+                <div class="toggle-info">
+                    <div class="toggle-label">Pull customer metadata</div>
+                    <div class="toggle-description">Enrich customer profiles with external CRM data points for better context.</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- API Access & Webhooks -->
+        <div class="two-column">
+            <div class="settings-section">
+                <div class="settings-section-title">API Access</div>
+
+                <div class="input-group">
+                    <label class="input-label">Secret Key</label>
+                    <div class="input-row">
+                        <input type="text" class="input-field masked" value="sk_live_••••••••••••••••••••" readonly>
+                        <button class="action-btn secondary">Copy</button>
+                    </div>
+                    <div class="input-hint">Last used: 2 hours ago</div>
+                </div>
+
+                <div class="input-row" style="margin-top: 16px;">
+                    <button class="action-btn secondary">View Documentation</button>
+                    <button class="action-btn secondary">Regenerate Key</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-section-title">Webhooks</div>
+
+                <div class="input-group">
+                    <label class="input-label">Endpoint URL</label>
+                    <div class="input-row">
+                        <input type="text" class="input-field" placeholder="https://your-server.com/webhook">
+                        <button class="action-btn primary">Test</button>
+                    </div>
+                    <div class="webhook-status">
+                        <span class="webhook-status-dot"></span>
+                        Not tested yet
+                    </div>
+                </div>
+
+                <div class="toggle-item" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.06);">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Enable webhook notifications</div>
+                        <div class="toggle-description">Receive real-time alerts via webhook.</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

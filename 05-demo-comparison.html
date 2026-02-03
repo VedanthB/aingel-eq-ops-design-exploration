@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traditional QA vs AINGEL - Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --noir-essence: #161719;
+            --noir-light: #1e1f21;
+            --noir-card: #242527;
+            --cultured: #F7F7F8;
+            --frosted-steel: #A5ADB8;
+            --coral: #C7918A;
+            --mauve: #A68A98;
+            --aura-gradient: linear-gradient(135deg, #C7918A 0%, #A68A98 100%);
+            --critical: #E54D4D;
+            --warning: #E5A84D;
+            --success: #4ADE80;
+            --font-family: 'Outfit', sans-serif;
+            --tracking-headline: 0.05em;
+            --tracking-follow: 0.15em;
+            --tracking-body: 0.05em;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--noir-essence);
+            color: var(--cultured);
+            min-height: 100vh;
+            font-weight: 400;
+            letter-spacing: var(--tracking-body);
+            line-height: 1.3;
+            overflow-x: hidden;
+        }
+
+        /* Full-screen Demo Layout */
+        .demo-container {
+            min-height: 100vh;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Background Effects */
+        .demo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at 80% 30%,
+                rgba(199, 145, 138, 0.1) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        /* Header */
+        .demo-header {
+            text-align: center;
+            margin-bottom: 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .demo-logo {
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-follow);
+            text-transform: uppercase;
+            background: var(--aura-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+        }
+
+        .demo-title {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-headline);
+            margin-bottom: 12px;
+        }
+
+        .demo-subtitle {
+            font-size: 18px;
+            color: var(--frosted-steel);
+            font-weight: 300;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* VS Divider */
+        .vs-divider {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--noir-essence);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--frosted-steel);
+            z-index: 10;
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel.traditional {
+            opacity: 0.7;
+        }
+
+        .panel.aingel {
+            border-color: rgba(199, 145, 138, 0.3);
+            box-shadow: 0 0 40px rgba(199, 145, 138, 0.15);
+        }
+
+        .panel.aingel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                ellipse at 50% 0%,
+                rgba(199, 145, 138, 0.08) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .panel-label {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 8px;
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: var(--tracking-headline);
+        }
+
+        .traditional .panel-title {
+            color: var(--frosted-steel);
+        }
+
+        .aingel .panel-title {
+            background: var(--aura-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .traditional .score-circle {
+            background: rgba(74, 222, 128, 0.1);
+            border: 3px solid var(--success);
+        }
+
+        .aingel .score-circle {
+            background: rgba(229, 77, 77, 0.15);
+            border: 3px solid var(--critical);
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+
+        .traditional .score-value {
+            color: var(--success);
+        }
+
+        .aingel .score-value {
+            color: var(--critical);
+        }
+
+        .score-icon {
+            font-size: 18px;
+            margin-top: 4px;
+        }
+
+        .score-verdict {
+            font-size: 14px;
+            color: var(--frosted-steel);
+        }
+
+        .aingel .score-verdict {
+            color: var(--critical);
+        }
+
+        /* Checklist */
+        .checklist {
+            margin-bottom: 24px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .check-icon.pass {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--success);
+        }
+
+        .check-icon.fail {
+            background: rgba(229, 77, 77, 0.2);
+            color: var(--critical);
+        }
+
+        .checklist-label {
+            color: var(--frosted-steel);
+        }
+
+        .checklist-value {
+            margin-left: auto;
+            font-weight: 400;
+        }
+
+        .checklist-value.pass {
+            color: var(--success);
+        }
+
+        .checklist-value.fail {
+            color: var(--critical);
+        }
+
+        /* Dimension Scores (AINGEL) */
+        .dimension-scores {
+            margin-bottom: 24px;
+        }
+
+        .dimension-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .dimension-item:last-child {
+            border-bottom: none;
+        }
+
+        .dimension-label {
+            font-size: 14px;
+            color: var(--frosted-steel);
+        }
+
+        .dimension-score {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dimension-value {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--critical);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .dimension-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .dimension-fill {
+            height: 100%;
+            background: var(--critical);
+            border-radius: 3px;
+        }
+
+        /* Flags Section */
+        .flags-section {
+            margin-bottom: 24px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+            color: var(--frosted-steel);
+            margin-bottom: 12px;
+        }
+
+        .flag-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(199, 145, 138, 0.1);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--coral);
+        }
+
+        /* Impact Section */
+        .impact-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .impact-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .impact-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--frosted-steel);
+        }
+
+        .impact-value {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .impact-value.money {
+            color: var(--cultured);
+        }
+
+        .impact-value.alert {
+            color: var(--critical);
+            background: rgba(229, 77, 77, 0.2);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-follow);
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+            color: var(--frosted-steel);
+            font-size: 14px;
+        }
+
+        /* Story Card */
+        .story-card {
+            max-width: 1200px;
+            width: 100%;
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 24px 32px;
+            text-align: center;
+            margin-bottom: 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .story-text {
+            font-size: 16px;
+            color: var(--cultured);
+            line-height: 1.6;
+        }
+
+        .story-text strong {
+            color: var(--coral);
+        }
+
+        /* Tagline */
+        .tagline {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline-text {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: var(--tracking-headline);
+            color: var(--cultured);
+        }
+
+        .tagline-text span {
+            color: var(--coral);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(199, 145, 138, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(199, 145, 138, 0.25);
+            }
+        }
+
+        .demo-header { animation: fadeInUp 0.6s ease-out; }
+        .panel.traditional { animation: fadeInUp 0.6s ease-out 0.2s both; }
+        .panel.aingel {
+            animation: fadeInUp 0.6s ease-out 0.4s both, pulseGlow 3s ease-in-out infinite;
+        }
+        .story-card { animation: fadeInUp 0.6s ease-out 0.6s both; }
+        .tagline { animation: fadeInUp 0.6s ease-out 0.8s both; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <header class="demo-header">
+            <div class="demo-logo">A I N G E L</div>
+            <h1 class="demo-title">Traditional QA vs AINGEL</h1>
+            <p class="demo-subtitle">"Same conversation. Completely different verdict."</p>
+        </header>
+
+        <!-- Comparison Grid -->
+        <div class="comparison-grid">
+            <div class="vs-divider">VS</div>
+
+            <!-- Traditional QA Panel -->
+            <div class="panel traditional">
+                <div class="panel-header">
+                    <div class="panel-label">Traditional QA</div>
+                    <div class="panel-title">Zendesk QA / Klaus</div>
+                </div>
+
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span class="score-value">94%</span>
+                        <span class="score-icon">✓</span>
+                    </div>
+                    <p class="score-verdict">"High quality interaction"</p>
+                </div>
+
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <span class="check-icon pass">✓</span>
+                        <span class="checklist-label">Greeting</span>
+                        <span class="checklist-value pass">Pass</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon pass">✓</span>
+                        <span class="checklist-label">Empathy Statement</span>
+                        <span class="checklist-value pass">Pass</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon pass">✓</span>
+                        <span class="checklist-label">Apology Offered</span>
+                        <span class="checklist-value pass">Pass</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon pass">✓</span>
+                        <span class="checklist-label">Professional Tone</span>
+                        <span class="checklist-value pass">Pass</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon pass">✓</span>
+                        <span class="checklist-label">Grammar</span>
+                        <span class="checklist-value pass">Pass</span>
+                    </div>
+                </div>
+
+                <div class="flags-section">
+                    <div class="section-label">Flags Detected</div>
+                    <div class="empty-state">0 flags</div>
+                </div>
+
+                <div class="impact-section">
+                    <div class="section-label" style="margin-bottom: 12px;">Business Impact</div>
+                    <div class="impact-item">
+                        <span class="impact-label">Revenue Impact</span>
+                        <span class="impact-value" style="color: var(--frosted-steel);">—</span>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-label">Alert</span>
+                        <span class="impact-value" style="color: var(--frosted-steel);">None</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AINGEL Panel -->
+            <div class="panel aingel">
+                <div class="panel-header">
+                    <div class="panel-label">AINGEL</div>
+                    <div class="panel-title">EQ-Ops</div>
+                </div>
+
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span class="score-value">0.75</span>
+                        <span class="score-icon" style="font-size: 12px; color: var(--frosted-steel);">/4</span>
+                    </div>
+                    <p class="score-verdict">"Critical failure, likely churn"</p>
+                </div>
+
+                <div class="dimension-scores">
+                    <div class="dimension-item">
+                        <span class="dimension-label">Tone</span>
+                        <div class="dimension-score">
+                            <span class="dimension-value">1.5/4</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 37.5%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dimension-item">
+                        <span class="dimension-label">Proportionality</span>
+                        <div class="dimension-score">
+                            <span class="dimension-value">1.0/4</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dimension-item">
+                        <span class="dimension-label">Intent Alignment</span>
+                        <div class="dimension-score">
+                            <span class="dimension-value">0.5/4</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 12.5%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dimension-item">
+                        <span class="dimension-label">Resolution</span>
+                        <div class="dimension-score">
+                            <span class="dimension-value">0/4</span>
+                            <div class="dimension-bar">
+                                <div class="dimension-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flags-section">
+                    <div class="section-label">Flags Detected</div>
+                    <div class="flag-item">🚩 blame_shift</div>
+                    <div class="flag-item">🚩 repeated_deflection</div>
+                    <div class="flag-item">🚩 cheerful_abandonment</div>
+                    <div class="flag-item">🚩 churn_signal_ignored</div>
+                </div>
+
+                <div class="impact-section">
+                    <div class="section-label" style="margin-bottom: 12px;">Business Impact</div>
+                    <div class="impact-item">
+                        <span class="impact-label">💰 Revenue at Risk</span>
+                        <span class="impact-value money">$127</span>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-label">👤 Customer LTV</span>
+                        <span class="impact-value money">$847</span>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-label">⚠️ Alert</span>
+                        <span class="impact-value alert">Churn Risk</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Card -->
+        <div class="story-card">
+            <p class="story-text">
+                <strong>The Conversation:</strong> Customer asked for alternatives <strong>3 times</strong>. Got none.<br>
+                Said they'd buy more. <strong>Rage-quit</strong>. Bot said <strong>"You got it! 😊"</strong>
+            </p>
+        </div>
+
+        <!-- Tagline -->
+        <div class="tagline">
+            <p class="tagline-text">"They measure <span>compliance</span>. We measure <span>quality</span>."</p>
+        </div>
+    </div>
+</body>
+</html>
