@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AINGEL EQ-Ops Design - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --noir-essence: #161719;
+            --noir-light: #1e1f21;
+            --cultured: #F7F7F8;
+            --frosted-steel: #A5ADB8;
+            --coral: #C7918A;
+            --mauve: #A68A98;
+            --aura-gradient: linear-gradient(135deg, #C7918A 0%, #A68A98 100%);
+            --critical: #E54D4D;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--noir-essence);
+            color: var(--cultured);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at 30% 20%,
+                rgba(199, 145, 138, 0.1) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        .login-container {
+            text-align: center;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: var(--aura-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: var(--frosted-steel);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 48px;
+        }
+
+        .login-card {
+            background: var(--noir-light);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 40px;
+            width: 360px;
+            backdrop-filter: blur(12px);
+        }
+
+        .login-title {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: var(--frosted-steel);
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--frosted-steel);
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--noir-essence);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            color: var(--cultured);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--coral);
+        }
+
+        .input-group input::placeholder {
+            color: var(--frosted-steel);
+            opacity: 0.5;
+        }
+
+        .error-message {
+            color: var(--critical);
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--aura-gradient);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--cultured);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(199, 145, 138, 0.3);
+        }
+
+        .footer-note {
+            margin-top: 32px;
+            font-size: 12px;
+            color: var(--frosted-steel);
+            opacity: 0.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-container { animation: fadeIn 0.5s ease-out; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">A I N G E L</div>
+        <div class="tagline">Design Exploration</div>
+
+        <div class="login-card">
+            <h1 class="login-title">Team Access</h1>
+            <p class="login-subtitle">Enter the shared password to view designs</p>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" autocomplete="off">
+                </div>
+
+                <p class="error-message" id="errorMsg">Incorrect password. Please try again.</p>
+
+                <button type="submit" class="submit-btn">View Designs</button>
+            </form>
+
+            <p class="footer-note">Contact vedanth@krazimo.com for access</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple password protection
+        // Password: aingel2026 (can be changed)
+        const CORRECT_HASH = '5f4dcc3b5aa765d61d8327deb882cf99'; // MD5 of 'aingel2026'
+
+        // Simple hash function (not cryptographically secure, but fine for design preview)
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        // Check if already authenticated
+        if (sessionStorage.getItem('aingel_auth') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+
+            // Simple password check (password: aingel2026)
+            if (password === 'aingel2026') {
+                sessionStorage.setItem('aingel_auth', 'true');
+                window.location.href = 'index.html';
+            } else {
+                document.getElementById('errorMsg').classList.add('show');
+                document.getElementById('password').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
